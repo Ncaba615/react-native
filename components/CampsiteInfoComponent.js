@@ -7,8 +7,8 @@ import {
   Modal,
   Button,
   StyleSheet,
-  Alert, 
-  PanResponder
+  Alert,
+  PanResponder,
 } from "react-native";
 import { Card, Icon, Input, Rating } from "react-native-elements";
 import { connect } from "react-redux";
@@ -26,7 +26,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
   postFavorite: (campsiteId) => postFavorite(campsiteId),
-  postComment: (campsiteId, rating, author, text) => postComment(campsiteId, rating, author, text)
+  postComment: (campsiteId, rating, author, text) =>
+    postComment(campsiteId, rating, author, text),
 };
 
 function RenderCampsite(props) {
@@ -34,6 +35,7 @@ function RenderCampsite(props) {
   const view = React.createRef();
 
   const recognizeDrag = ({ dx }) => (dx < -200 ? true : false);
+  const recognizeComment = ({ dx }) => (dx > 200 ? true : false);
 
   const panResponder = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
@@ -66,6 +68,8 @@ function RenderCampsite(props) {
           ],
           { cancelable: false }
         );
+      } else if (recognizeComment(gestureState)) {
+        props.onShowModal();
       }
       return true;
     },
@@ -171,7 +175,12 @@ class CampsiteInfo extends Component {
   }
 
   handleComment(campsiteId) {
-    this.props.postComment(campsiteId, this.state.rating, this.state.author, this.state.text);
+    this.props.postComment(
+      campsiteId,
+      this.state.rating,
+      this.state.author,
+      this.state.text
+    );
     this.toggleModal();
   }
 
